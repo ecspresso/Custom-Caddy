@@ -1,7 +1,5 @@
 #!/bin/bash
 
-UPDATE=false
-
 ###############################
 #           CADDY             #
 ###############################
@@ -26,7 +24,6 @@ NEW_DIGEST="$(echo $MANIFEST | jq -r '.manifests[] | select(.platform.architectu
 
 if [ "$OLD_DIGEST" != "$NEW_DIGEST" ]; then
   echo $NEW_DIGEST > $DIGEST_FILE
-  UPDATE=true
 fi
 
 
@@ -54,7 +51,6 @@ NEW_DIGEST="$(echo $MANIFEST | jq -r '.manifests[] | select(.platform.architectu
 
 if [ "$OLD_DIGEST" != "$NEW_DIGEST" ]; then
   echo $NEW_DIGEST > $DIGEST_FILE
-  UPDATE=true
 fi
 
 
@@ -74,7 +70,6 @@ NEW_SHA="$(curl -s "https://api.github.com/repos/${OWNER}/${REPOSITORY}/branches
 
 if [ "$OLD_SHA" != "$NEW_SHA" ]; then
   echo $NEW_SHA > $SHA_FILE
-  UPDATE=true
 fi
 
 
@@ -93,9 +88,4 @@ NEW_SHA="$(curl -s "https://api.github.com/repos/${OWNER}/${REPOSITORY}/branches
 
 if [ "$OLD_SHA" != "$NEW_SHA" ]; then
   echo $NEW_SHA > $SHA_FILE
-  UPDATE=true
-fi
-
-if $UPDATE; then
-  echo "update"
 fi

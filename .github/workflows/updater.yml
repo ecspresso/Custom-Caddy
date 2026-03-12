@@ -1,0 +1,31 @@
+name: Run scheduled script
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-and-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          # Value already defaults to true, but `persist-credentials` is required to push new commits to the repository.
+          persist-credentials: true
+
+      - name: Run updatescript
+        run: ./update.sh
+
+      - name: Commit changes if any
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "Update deps to trigger new image build"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
