@@ -9,9 +9,7 @@
 
 name: Create and publish a custom Caddy image
 
-on:
-  release:
-    types: [main]
+on: [push]
 
 env:
   IMAGE_NAME: caddy
