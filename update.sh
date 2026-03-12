@@ -6,7 +6,8 @@ UPDATE=false
 #           CADDY             #
 ###############################
 
-OLD_DIGEST="$(cat caddy.digest)"
+DIGEST_FILE="caddy.digest"
+OLD_DIGEST="$(cat $DIGEST_FILE)"
 NEW_DIGEST=""
 NAMESPACE="caddyserver"
 REPOSITORY="caddy"
@@ -24,7 +25,7 @@ MANIFEST="$(curl -s https://registry-1.docker.io/v2/library/${REPOSITORY}/manife
 NEW_DIGEST="$(echo $MANIFEST | jq -r '.manifests[] | select(.platform.architecture == "amd64" and .platform.os == "linux") | .digest')"
 
 if [ "$OLD_DIGEST" != "$NEW_DIGEST" ]; then
-  echo $NEW_DIGEST
+  echo $NEW_DIGEST > $DIGEST_FILE
   UPDATE=true
 fi
 
@@ -33,7 +34,8 @@ fi
 #       CADDY BUILDER         #
 ###############################
 
-OLD_DIGEST="$(cat caddy-builder.digest)"
+DIGEST_FILE="caddy-builder.digest"
+OLD_DIGEST="$(cat $DIGEST_FILE)"
 NEW_DIGEST=""
 NAMESPACE="caddyserver"
 REPOSITORY="caddy"
@@ -51,7 +53,8 @@ MANIFEST="$(curl -s https://registry-1.docker.io/v2/library/${REPOSITORY}/manife
 NEW_DIGEST="$(echo $MANIFEST | jq -r '.manifests[] | select(.platform.architecture == "amd64" and .platform.os == "linux") | .digest')"
 
 if [ "$OLD_DIGEST" != "$NEW_DIGEST" ]; then
-  echo $NEW_DIGEST
+  echo $NEW_DIGEST > $DIGEST_FILE
+  UPDATE=true
 fi
 
 
@@ -60,7 +63,8 @@ fi
 #             MIB             #
 ###############################
 
-OLD_SHA="$(cat mib.sha)"
+SHA_FILE="mib.sha"
+OLD_SHA="$(cat $SHA_FILE)"
 NEW_SHA=""
 OWNER="fabriziosalmi"
 REPOSITORY="caddy-mib"
@@ -69,7 +73,7 @@ BRANCH="main"
 NEW_SHA="$(curl -s "https://api.github.com/repos/${OWNER}/${REPOSITORY}/branches/${BRANCH}" | jq -r '.commit.sha')"
 
 if [ "$OLD_SHA" != "$NEW_SHA" ]; then
-  echo $NEW_SHA
+  echo $NEW_SHA > $SHA_FILE
   UPDATE=true
 fi
 
@@ -78,7 +82,8 @@ fi
 #            BROTLI           #
 ###############################
 
-OLD_SHA="$(cat brotli.sha)"
+SHA_FILE="brotli.sha"
+OLD_SHA="$(cat $SHA_FILE)"
 NEW_SHA=""
 OWNER="ueffel"
 REPOSITORY="caddy-brotli"
@@ -87,10 +92,10 @@ BRANCH="master"
 NEW_SHA="$(curl -s "https://api.github.com/repos/${OWNER}/${REPOSITORY}/branches/${BRANCH}" | jq -r '.commit.sha')"
 
 if [ "$OLD_SHA" != "$NEW_SHA" ]; then
-  echo $NEW_SHA
+  echo $NEW_SHA > $SHA_FILE
   UPDATE=true
 fi
 
-if [ $UPDATE ]; then
+if $UPDATE; then
   echo "update"
 fi
