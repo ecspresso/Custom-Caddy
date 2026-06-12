@@ -89,3 +89,20 @@ NEW_SHA="$(curl -s "https://api.github.com/repos/${OWNER}/${REPOSITORY}/branches
 if [ "$OLD_SHA" != "$NEW_SHA" ]; then
   echo $NEW_SHA > $SHA_FILE
 fi
+
+###############################
+#      TRANSFORM-ENCODER      #
+###############################
+
+SHA_FILE="transform-encoder.sha"
+OLD_SHA="$(cat $SHA_FILE)"
+NEW_SHA=""
+OWNER="caddyserver"
+REPOSITORY="transform-encoder"
+BRANCH="master"
+
+NEW_SHA="$(curl -s "https://api.github.com/repos/${OWNER}/${REPOSITORY}/branches/${BRANCH}" | jq -r '.commit.sha')"
+
+if [ "$OLD_SHA" != "$NEW_SHA" ]; then
+  echo $NEW_SHA > $SHA_FILE
+fi
